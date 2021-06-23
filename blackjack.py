@@ -35,4 +35,169 @@ class Deck:
     def shuffle_deck(self):
         shuffle(self.all_cards)
 
+    def deal_card(self):
+        return self.all_cards.pop(0)
+
+
+class Player:
+
+    def __init__(self, name, bankroll=500):
+        self.name = name
+        self.bankroll = bankroll
+
+    def __str__(self):
+        return f'{self.name} currently has {self.bankroll} in their bankroll.'
+
+    
+class Hand:
+
+    def __init__(self):
+
+        self.card_list = []
+        self.value = 0
+        self.has_ace = False
+
+    def __str__(self):
+
+        return self.card_list
+
+    def add_card(self, card):
+
+        self.card_list.append(card)
+
+        if card.rank == "Ace":
+
+            self.has_ace = True
+
+            if self.value > 10:
+                self.value += card.value[0]
+            else:
+                self.value += card.value[1]
+        
+        if self.has_ace and self.value > 21:
+            self.value -= 10
+
+
+def play_again(current_bankroll):
+    
+    if current_bankroll == 0:
+        print("Sorry, you have no money left to play.")
+        return False
+    
+    decision = input("Would you like to play again? (Y/N): ")
+
+    if decision == 'Y':
+        return True
+    elif decision == 'N':
+        return False
+    else:
+        print("Invalid input. Please try again.")
+        play_again(current_bankroll)
+
+
+player1 = Player("Sam")
+game_on = True
+
+print(f"Welcome to Black Jack {player1.name}!")
+input("Press enter to start the game.")
+
+
+while game_on:
+
+    player_turn = True
+    betting_turn = True
+    player_busted = False
+    new_deck = Deck()
+    new_deck.shuffle_deck()
+    dealer_hand = Hand()
+    player_hand = Hand()
+
+    while betting_turn:
+        try:
+            player_bet = int(input(f"Please place your bets (1-{player1.bankroll}): "))
+        except:
+
+            print(f'Please only enter an integer between 1 and {player1.bankroll}\n\n')
+            continue
+        else:
+
+            if player_bet > player1.bankroll:
+                print("You don't have enough money to place a bet of that size! Please try again!\n\n")
+            else:
+
+                player1.bankroll -= player_bet
+                betting_turn = False
+
+    for _ in range(2):
+
+        dealer_hand.add_card(new_deck.deal_card())
+        player_hand.add_card(new_deck.deal_card())
+
+    while player_turn:
+
+        print("\n\n")
+        print(f"Dealer's Hand: [{dealer_hand.card_list[0]}, *Face Down*]")
+        print("\n")
+        print(f'Your Hand: {player_hand}')
+        print(f'Current Value: {player_hand.value}')
+
+        
+        try:
+            option = int(input("Would you like to (1) Hit or (2) Stay (Input 1 or 2): "))
+        except:
+
+            print("Invalid selection! Please input only 1 or 2.")
+            continue
+        else:
+
+            if option == 1:
+
+                player_hand.add_card(new_deck.deal_card())
+
+                if player_hand.value > 21:
+
+                    player_busted = True
+                    player_turn = False
+                    print("Sorry! You busted this hand!")
+                    break
+                else:
+                    continue
+
+            elif option == 2:
+
+                print(f"Your final hand value is: {player_hand.value}")
+                player_turn = False
+            else:
+
+                print("Invalid selection! Please input only 1 or 2.")
+                continue
+
+    if player_busted:
+
+        print(f"You lost a total of {player_bet} this hand.")
+        game_on = play_again(player1.bankroll)
+    else:
+
+        while dealer_hand.value < 21 and dealer_hand.value < player_hand.value:
+            dealer_hand.add_card(new_deck.deal_card())
+            print("\n\n")
+            print(f"Dealer's Hand: {dealer_hand}")
+            print(f"Dealer's Value: {dealer_hand.value}")
+            print(f'Your Final Value: {player_hand.value}')
+
+        if player_hand.value > dealer_hand.value < 21:
+
+            print(f"You beat the dealer! Congratulations you have earned {player_bet * 2} dollars!")
+            player1.bankroll += player_bet * 2
+            game_on = play_again(player1.bankroll)
+        elif player_hand.value < dealer_hand.value < 21:
+
+            print(f'You lost this hand. Your bet of {player_bet} goes to the house.')
+            game_on = play_again(player1.bankroll)
+        else:
+
+            print(f"The dealer has busted! Congratulations you have earned {player_bet * 2} dollars!")
+            player1.bankroll += player_bet * 2
+            game_on = play_again(player1.bankroll)
+        
 
