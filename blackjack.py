@@ -55,7 +55,7 @@ class Hand:
 
         self.card_list = []
         self.value = 0
-        self.has_ace = False
+        self.num_aces = 0
 
     def __str__(self):
 
@@ -74,15 +74,14 @@ class Hand:
 
             if self.value > 10:
                 self.value += card.value[0]
-                self.has_ace = False
             else:
                 self.value += card.value[1]
-                self.has_ace = True
+                self.num_aces += 1
         else:
             self.value += card.value
         
-        if self.has_ace and self.value > 21:
-            self.has_ace = False
+        if self.num_aces > 0 and self.value > 21:
+            self.num_aces -= 1
             self.value -= 10
 
 
