@@ -72,16 +72,17 @@ class Hand:
 
         if card.rank == "Ace":
 
-            self.has_ace = True
-
             if self.value > 10:
                 self.value += card.value[0]
+                self.has_ace = False
             else:
                 self.value += card.value[1]
+                self.has_ace = True
         else:
             self.value += card.value
         
         if self.has_ace and self.value > 21:
+            self.has_ace = False
             self.value -= 10
 
 
@@ -144,7 +145,7 @@ while game_on:
 
         print("\n\n")
         print(f"Dealer's Hand: {dealer_hand.card_list[0]}   *Face Down*")
-        print("\n")
+        print("")
         print(f'Your Hand: {player_hand}')
         print(f'Current Value: {player_hand.value}')
 
