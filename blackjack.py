@@ -59,7 +59,12 @@ class Hand:
 
     def __str__(self):
 
-        return self.card_list
+        card_string = ""
+
+        for card in self.card_list:
+            card_string += str(card) + "   "
+
+        return card_string
 
     def add_card(self, card):
 
@@ -73,6 +78,8 @@ class Hand:
                 self.value += card.value[0]
             else:
                 self.value += card.value[1]
+        else:
+            self.value += card.value
         
         if self.has_ace and self.value > 21:
             self.value -= 10
@@ -136,7 +143,7 @@ while game_on:
     while player_turn:
 
         print("\n\n")
-        print(f"Dealer's Hand: [{dealer_hand.card_list[0]}, *Face Down*]")
+        print(f"Dealer's Hand: {dealer_hand.card_list[0]}   *Face Down*")
         print("\n")
         print(f'Your Hand: {player_hand}')
         print(f'Current Value: {player_hand.value}')
@@ -158,6 +165,8 @@ while game_on:
 
                     player_busted = True
                     player_turn = False
+                    print(f'Your Hand: {player_hand}')
+                    print(f'Current Value: {player_hand.value}')
                     print("Sorry! You busted this hand!")
                     break
                 else:
