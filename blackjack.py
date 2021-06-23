@@ -31,7 +31,7 @@ class Deck:
         for suit in suits:
             for rank in ranks:
                 self.all_cards.append(Card(suit, rank))
-    
+
     def shuffle_deck(self):
         shuffle(self.all_cards)
 
@@ -48,7 +48,7 @@ class Player:
     def __str__(self):
         return f'{self.name} currently has {self.bankroll} in their bankroll.'
 
-    
+
 class Hand:
 
     def __init__(self):
@@ -79,18 +79,18 @@ class Hand:
                 self.num_aces += 1
         else:
             self.value += card.value
-        
+
         if self.num_aces > 0 and self.value > 21:
             self.num_aces -= 1
             self.value -= 10
 
 
 def play_again(current_bankroll):
-    
+
     if current_bankroll == 0:
         print("Sorry, you have no money left to play.")
         return False
-    
+
     decision = input("Would you like to play again? (Y/N): ")
 
     if decision == 'Y':
@@ -148,7 +148,7 @@ while game_on:
         print(f'Your Hand: {player_hand}')
         print(f'Current Value: {player_hand.value}')
 
-        
+
         try:
             option = int(input("Would you like to (1) Hit or (2) Stay (Input 1 or 2): "))
         except:
@@ -169,8 +169,6 @@ while game_on:
                     print(f'Current Value: {player_hand.value}')
                     print("Sorry! You busted this hand!")
                     break
-                else:
-                    continue
 
             elif option == 2:
 
@@ -208,5 +206,3 @@ while game_on:
             print(f"The dealer has busted! Congratulations you have earned {player_bet * 2} dollars!")
             player1.bankroll += player_bet * 2
             game_on = play_again(player1.bankroll)
-        
-
